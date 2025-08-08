@@ -697,7 +697,7 @@ export default function App() {
 /* ------------------------------- Solvers & UX ------------------------------ */
 function ContributionSolver({
   currentFunds, targetGoal, years, contributionIncreasePct, annualReturnPct, currency,
-}:{ currentFunds:number; targetGoal:number; years:number; contributionIncreasePct:number; annualReturnPct:number; currency: CurrencyCode; }) {
+:{ currentFunds:number; targetGoal:number; years:number; contributionIncreasePct:number; annualReturnPct:number; currency: CurrencyCode; }) {
   const [solved, setSolved] = useState<number | null>(null); const [busy, setBusy] = useState(false);
   const solve = () => {
     setBusy(true);
