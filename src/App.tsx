@@ -77,20 +77,61 @@ function LifestylePanel({
   const MAX_RATE_PCT = 100;
   const pctToDec = (pct: number) => pct / 100;
   const decToPct = (dec: number) => dec * 100;
-  const handleRateInput = (raw: string) => {
-    const v = parseFloat(raw);
-    if (Number.isNaN(v)) { setSelectedRate(0); return; }
-    const clamped = Math.max(0, Math.min(MAX_RATE_PCT, v));
-    setSelectedRate(pctToDec(clamped));
-  };
-  const PercentInput = ({ valuePct, onChange }: { valuePct: number; onChange: (v: string) => void }) => (
+  // keep these in LifestylePanel
+const MAX_RATE_PCT = 100;
+const pctToDec = (pct: number) => pct / 100;
+const decToPct = (dec: number) => dec * 100;
+
+// parse + clamp helper (accepts commas too)
+const handleRateInput = (raw: string) => {
+  const v = parseFloat(String(raw).replace(",", "."));
+  if (Number.isNaN(v)) { setSelectedRate(0); return; }
+  const clamped = Math.max(0, Math.min(MAX_RATE_PCT, v));
+  setSelectedRate(pctToDec(clamped));
+};
+
+// % input with no native spinner, rounded display, and padding for the % suffix
+const PercentInput = ({
+  valuePct,
+  onChange,
+}: { valuePct: number; onChange: (v: string) => void }) => {
+  const [val, setVal] = React.useState<string>("");
+
+  // keep the field synced with parent (rounded to 1 decimal)
+  React.useEffect(() => {
+    const display = Number.isFinite(valuePct) ? valuePct.toFixed(1) : "";
+    setVal(display);
+  }, [valuePct]);
+
+  return (
     <div className="relative">
-      <Input type="number" step={0.1} min={0} max={MAX_RATE_PCT}
-             value={Number.isFinite(valuePct) ? valuePct : 0}
-             onChange={(e) => onChange(e.target.value)} aria-label="Passive rate percent" />
-      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
+      <input
+        type="text"                // no spinner
+        inputMode="decimal"        // mobile numeric keypad
+        className="w-full rounded-md border px-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+        value={val}
+        onChange={(e) => {
+          const s = e.target.value;
+          setVal(s);
+          onChange(s);             // lets parent parse/clamp
+        }}
+        onBlur={() => {
+          const n = parseFloat(val.replace(",", "."));
+          if (!Number.isNaN(n)) {
+            const rounded = n.toFixed(1);
+            setVal(rounded);
+            onChange(rounded);
+          }
+        }}
+        aria-label="Passive rate percent"
+      />
+      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">
+        %
+      </span>
     </div>
   );
+};
+
 
   type Band = { min: number; label: string; blurb: string };
   type CountryGuide = { name: string; currency: string; bands: Band[] };
