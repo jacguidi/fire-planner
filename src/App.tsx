@@ -355,7 +355,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
-                FIRE Planner <span className="opacity-60">— Premium</span>
+                Easy FIRE Planner <span className="opacity-60">— Free</span>
               </h1>
               <p className="text-sm text-slate-500">Plan, project, and sanity-check your path to financial independence.</p>
             </div>
