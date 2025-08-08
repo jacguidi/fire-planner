@@ -430,30 +430,91 @@ export default function App() {
   </p>
 </div>
 
-        {/* Right: Export button (icon-only on phones) */}
-      <div className="col-span-1 md:col-auto flex items-center justify-end gap-2">
-        {/* icon-only on xs */}
-        <Button
-          variant="secondary"
-          onClick={exportCSV}
-          className="px-2 py-2 inline-flex sm:hidden"
-          aria-label="Export CSV"
-          title="Export CSV"
-        >
-          <Download className="w-4 h-4" />
-        </Button>
-
-        {/* text button from sm+ */}
-        <Button
-          variant="secondary"
-          onClick={exportCSV}
-          className="gap-2 hidden sm:inline-flex"
-          title="Download the month-by-month projection to CSV."
-        >
-          <Download className="w-4 h-4" />
-          Export CSV
-        </Button>
+       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
+  <div className="max-w-6xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+    {/* Left: logo + title */}
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-2xl bg-slate-900/90 text-white grid place-items-center font-bold">
+        {currencySymbol(currency)}
       </div>
+      <div>
+        <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
+          Easy FIRE Planner <span className="opacity-60">— Premium</span>
+        </h1>
+        <p className="text-sm text-slate-500 hidden sm:block">
+          Financial Independence, Retire Early made easy.
+        </p>
+      </div>
+    </div>
+
+    {/* Middle: currency select */}
+    <div className="flex items-center gap-2 sm:justify-center">
+      <label className="text-sm text-slate-600">Currency</label>
+      <select
+        value={currency}
+        onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+        className="rounded-md border px-2 py-1 text-sm"
+        aria-label="Select currency"
+      >
+        <option value="EUR">€ EUR</option>
+        <option value="USD">$ USD</option>
+        <option value="GBP">£ GBP</option>
+      </select>
+    </div>
+
+    {/* Right: Real/Nominal segment + Export */}
+    <div className="flex items-center justify-between sm:justify-end gap-2">
+      <div
+        className="inline-flex rounded-md shadow-sm"
+        role="group"
+        title="Choose between inflation-adjusted (real) or raw (nominal) currency."
+      >
+        <button
+          type="button"
+          onClick={() => setShowReal(true)}
+          className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
+            showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
+          } rounded-l-md`}
+        >
+          Real
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowReal(false)}
+          className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
+            !showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
+          } rounded-r-md`}
+        >
+          Nominal
+        </button>
+      </div>
+
+      {/* one helper line (mobile only) */}
+      <span className="text-[10px] text-gray-500 sm:hidden">
+        Real = inflation-adjusted, Nominal = not adjusted.
+      </span>
+
+      {/* icon button on phones */}
+      <Button
+        variant="secondary"
+        onClick={exportCSV}
+        className="px-2 py-2 sm:hidden"
+        aria-label="Export CSV"
+        title="Export CSV"
+      >
+        <Download className="w-4 h-4" />
+      </Button>
+
+      {/* text button from sm+ */}
+      <Button
+        variant="secondary"
+        onClick={exportCSV}
+        className="hidden sm:inline-flex gap-2"
+        title="Download the month-by-month projection to CSV."
+      >
+        <Download className="w-4 h-4" />
+        Export CSV
+      </Button>
     </div>
   </div>
 </header>
