@@ -695,6 +695,15 @@ export default function App() {
   );
 
 /* ------------------------------- Solvers & UX ------------------------------ */
+type ContributionSolverParams = {
+  currentFunds: number;
+  targetGoal: number;
+  years: number;
+  contributionIncreasePct: number;
+  annualReturnPct: number;
+  currency: CurrencyCode;
+};
+
 function ContributionSolver({
   currentFunds,
   targetGoal,
@@ -702,15 +711,7 @@ function ContributionSolver({
   contributionIncreasePct,
   annualReturnPct,
   currency,
-}: {
-  currentFunds: number;
-  targetGoal: number;
-  years: number;
-  contributionIncreasePct: number;
-  annualReturnPct: number;
-  currency: CurrencyCode;
-}) {
-
+}: ContributionSolverParams) {
 
     targetGoal,
     years,
