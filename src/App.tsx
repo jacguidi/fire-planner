@@ -434,8 +434,8 @@ export default function App() {
 </div>
 
   {/* helper text for phones */}
-  <span className="text-[10px] text-gray-500 sm:hidden">
-    Real = inflation-adjusted, Nominal = not adjusted.
+  <span className="hidden" aria-hidden="true">
+    
   </span>
 </div>
 
