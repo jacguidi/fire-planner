@@ -398,14 +398,35 @@ export default function App() {
         </div>
 
         <div
-          className="flex items-center gap-2 text-xs sm:text-sm whitespace-nowrap"
-          title="Toggle whether outputs show inflation-adjusted (real) or raw (nominal) currency."
-        >
-          <Switch checked={showReal} onChange={setShowReal} />
-          <span className="hidden sm:inline">Show real</span>
-          <span className="hidden md:inline">(inflation-adjusted)</span>
-        </div>
-      </div>
+          <div className="flex flex-col gap-1">
+  <div
+    className="inline-flex rounded-md shadow-sm"
+    role="group"
+    title="Choose between inflation-adjusted (real) or raw (nominal) currency."
+  >
+    <button
+      type="button"
+      onClick={() => setShowReal(true)}
+      className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
+        showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
+      } rounded-l-md`}
+    >
+      Real
+    </button>
+    <button
+      type="button"
+      onClick={() => setShowReal(false)}
+      className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
+        !showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
+      } rounded-r-md`}
+    >
+      Nominal
+    </button>
+  </div>
+  <span className="text-[10px] text-gray-500 sm:hidden">
+    Real = inflation-adjusted, Nominal = not adjusted.
+  </span>
+</div>
 
       {/* Right: Export button (icon-only on phones) */}
       <div className="col-span-1 md:col-auto flex items-center justify-end gap-2">
