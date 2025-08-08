@@ -695,23 +695,21 @@ export default function App() {
   );
 
 /* ------------------------------- Solvers & UX ------------------------------ */
-function ContributionSolver(
-  {
-    currentFunds,
-    targetGoal,
-    years,
-    contributionIncreasePct,
-    annualReturnPct,
-    currency
-  }: {
-    currentFunds: number;
-    targetGoal: number;
-    years: number;
-    contributionIncreasePct: number;
-    annualReturnPct: number;
-    currency: CurrencyCode;
-  }
-) {
+function ContributionSolver({
+  currentFunds,
+  targetGoal,
+  years,
+  contributionIncreasePct,
+  annualReturnPct,
+  currency,
+}: {
+  currentFunds: number;
+  targetGoal: number;
+  years: number;
+  contributionIncreasePct: number;
+  annualReturnPct: number;
+  currency: CurrencyCode;
+}) {
 
     targetGoal,
     years,
