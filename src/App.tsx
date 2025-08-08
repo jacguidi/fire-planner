@@ -694,21 +694,13 @@ export default function App() {
     </div>
   );
 
-/* ------------------------------- Solvers & UX ------------------------------- */
 
 /* ------------------------------- Solvers & UX ------------------------------- */
 
 // If CurrencyCode is already defined/imported elsewhere, delete the next line.
 type CurrencyCode = 'USD' | 'EUR' | 'CZK' | 'GBP';
 
-function ContributionSolver(params: {
-  currentFunds: number;
-  targetGoal: number;
-  years: number;
-  contributionIncreasePct: number;
-  annualReturnPct: number;
-  currency: CurrencyCode;
-}) {
+function ContributionSolver(params: any) {
   const {
     currentFunds,
     targetGoal,
@@ -717,7 +709,6 @@ function ContributionSolver(params: {
     annualReturnPct,
     currency,
   } = params;
-
 
   const [solved, setSolved] = useState<number | null>(null); const [busy, setBusy] = useState(false);
   const solve = () => {
