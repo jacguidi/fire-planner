@@ -11,7 +11,21 @@ function CardHeader(props: React.HTMLAttributes<HTMLDivElement>) { return <div {
 function CardTitle(props: React.HTMLAttributes<HTMLDivElement>) { return <h2 {...props} className={"text-lg font-semibold " + (props.className || "")} />; }
 function CardContent(props: React.HTMLAttributes<HTMLDivElement>) { return <div {...props} className={"p-4 pt-2 " + (props.className || "")} />; }
 function Label({ children, ...rest }: React.LabelHTMLAttributes<HTMLLabelElement>) { return <label {...rest} className={"text-sm text-slate-700 block mb-1 " + (rest.className || "")}>{children}</label>; }
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) { return <input {...props} className={"w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400 " + (props.className || "")} />; }
+function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      {...props}
+      className={
+        "w-full rounded-md border px-3 py-2 " +
+        // 16px on mobile to prevent iOS zoom; smaller on md+
+        "text-base md:text-sm " +
+        "focus:outline-none focus:ring-2 focus:ring-slate-400 " +
+        (props.className || "")
+      }
+      inputMode={props.type === "number" ? "decimal" : props.inputMode}
+    />
+  );
+}
 function Button({children, variant="default", ...rest}: React.ButtonHTMLAttributes<HTMLButtonElement> & {variant?: "default"|"secondary"|"ghost"}) {
   const base = "px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center";
   const styles = variant==="secondary" ? "bg-slate-100 hover:bg-slate-200" : variant==="ghost" ? "hover:bg-slate-100" : "bg-slate-900 text-white hover:bg-slate-800";
@@ -347,43 +361,79 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
-     <header className="sticky top-0 z-18 backdrop-blur bg-white/80 border-b px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-slate-900/90 text-white grid place-items-center font-bold">
-              {currencySymbol(currency)}
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
-                Easy FIRE Planner <span className="opacity-60">— Free</span>
-              </h1>
-              <p className="text-sm text-slate-500">Financial Independence, Retire Early made easy.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-600">Currency</label>
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-                className="rounded-md border px-2 py-1 text-sm"
-                aria-label="Select currency"
-              >
-                <option value="EUR">€ EUR</option>
-                <option value="USD">$ USD</option>
-                <option value="GBP">£ GBP</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2" title="Toggle whether outputs show inflation-adjusted (real) or raw (nominal) currency.">
-              <Switch checked={showReal} onChange={setShowReal} />
-              <span className="text-sm">Show real (inflation-adjusted)</span>
-            </div>
-            <Button variant="secondary" onClick={exportCSV} className="gap-2" title="Download the month-by-month projection to CSV.">
-              <Download className="w-4 h-4"/>Export CSV
-            </Button>
-          </div>
+    <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
+  <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 md:py-4">
+    {/* On phones: grid stack. On md+: flex row */}
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 md:flex md:items-center md:justify-between">
+      
+      {/* Left: logo + title */}
+      <div className="col-span-2 md:col-span-1 flex items-center gap-2 sm:gap-3">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900/90 text-white grid place-items-center font-bold shrink-0">
+          {currencySymbol(currency)}
         </div>
-      </header>
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">
+            Easy FIRE Planner <span className="opacity-60">— Premium</span>
+          </h1>
+          <p className="hidden sm:block text-xs sm:text-sm text-slate-500">
+            Financial Independence, Retire Early made easy.
+          </p>
+        </div>
+      </div>
+
+      {/* Middle: currency + real/nominal toggle */}
+      <div className="col-span-1 flex items-center justify-start gap-2 sm:gap-3 md:order-none">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <label className="text-xs sm:text-sm text-slate-600">Currency</label>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+            className="rounded-md border px-2 py-1 text-sm"
+            aria-label="Select currency"
+          >
+            <option value="EUR">€ EUR</option>
+            <option value="USD">$ USD</option>
+            <option value="GBP">£ GBP</option>
+          </select>
+        </div>
+
+        <div
+          className="flex items-center gap-2 text-xs sm:text-sm whitespace-nowrap"
+          title="Toggle whether outputs show inflation-adjusted (real) or raw (nominal) currency."
+        >
+          <Switch checked={showReal} onChange={setShowReal} />
+          <span className="hidden sm:inline">Show real</span>
+          <span className="hidden md:inline">(inflation-adjusted)</span>
+        </div>
+      </div>
+
+      {/* Right: Export button (icon-only on phones) */}
+      <div className="col-span-1 md:col-auto flex items-center justify-end gap-2">
+        {/* icon-only on xs */}
+        <Button
+          variant="secondary"
+          onClick={exportCSV}
+          className="px-2 py-2 inline-flex sm:hidden"
+          aria-label="Export CSV"
+          title="Export CSV"
+        >
+          <Download className="w-4 h-4" />
+        </Button>
+
+        {/* text button from sm+ */}
+        <Button
+          variant="secondary"
+          onClick={exportCSV}
+          className="gap-2 hidden sm:inline-flex"
+          title="Download the month-by-month projection to CSV."
+        >
+          <Download className="w-4 h-4" />
+          Export CSV
+        </Button>
+      </div>
+    </div>
+  </div>
+</header>
 
       <main className="max-w-6xl mx-auto p-4 grid md:grid-cols-2 gap-6">
         <Card className="rounded-2xl shadow-sm">
