@@ -61,81 +61,71 @@ function project({ currentFunds, targetGoal, years, monthlyContribution, contrib
 function passiveIncomeTable(finalPot: number, rates: number[]) { return rates.map((r) => ({ rate: r, yearly: finalPot * r, monthly: (finalPot * r) / 12 })); }
 
 /* ---------------------------- lifestyle + QoL UI --------------------------- */
-function LifestylePanel({
-  displayFinal = 0,
-  rates: ratesProp,
-  currency = "EUR",
-}: { displayFinal?: number; rates?: number[]; currency?: CurrencyCode }) {
+function LifestylePanel({ displayFinal = 0, rates: ratesProp }: { displayFinal?: number; rates?: number[] }) {
   const defaultRates = [0.03, 0.035, 0.04, 0.05];
   const rates = (Array.isArray(ratesProp) && ratesProp.length > 0) ? ratesProp : defaultRates;
 
-  // keep internal state as a DECIMAL (0.04 = 4%), but show input as a PERCENT number (4.0)
-  const [selectedRate, setSelectedRate] = useState<number>(rates[2] ?? rates[rates.length - 1] ?? 0.04);
-  const monthlyPassive = useMemo(() => (displayFinal * selectedRate) / 12, [displayFinal, selectedRate]);
+  // internal state as decimal (0.04 = 4%)
+  const [selectedRate, setSelectedRate] = React.useState<number>(rates[2] ?? rates[rates.length - 1] ?? 0.04);
+  const monthlyPassive = React.useMemo(() => (displayFinal * selectedRate) / 12, [displayFinal, selectedRate]);
 
-  // typeable % field
+  // === helpers (single definitions) ===
   const MAX_RATE_PCT = 100;
   const pctToDec = (pct: number) => pct / 100;
   const decToPct = (dec: number) => dec * 100;
-  // keep these in LifestylePanel
-const MAX_RATE_PCT = 100;
-const pctToDec = (pct: number) => pct / 100;
-const decToPct = (dec: number) => dec * 100;
 
-// parse + clamp helper (accepts commas too)
-const handleRateInput = (raw: string) => {
-  const v = parseFloat(String(raw).replace(",", "."));
-  if (Number.isNaN(v)) { setSelectedRate(0); return; }
-  const clamped = Math.max(0, Math.min(MAX_RATE_PCT, v));
-  setSelectedRate(pctToDec(clamped));
-};
+  // parse + clamp helper (accepts commas too)
+  const handleRateInput = (raw: string) => {
+    const v = parseFloat(String(raw).replace(",", "."));
+    if (Number.isNaN(v)) { setSelectedRate(0); return; }
+    const clamped = Math.max(0, Math.min(MAX_RATE_PCT, v));
+    setSelectedRate(pctToDec(clamped));
+  };
 
-// % input with no native spinner, rounded display, and padding for the % suffix
-const PercentInput = ({
-  valuePct,
-  onChange,
-}: { valuePct: number; onChange: (v: string) => void }) => {
-  const [val, setVal] = React.useState<string>("");
+  // % input with no native spinner, rounded display, and padding for the % suffix
+  const PercentInput = ({
+    valuePct,
+    onChange,
+  }: { valuePct: number; onChange: (v: string) => void }) => {
+    const [val, setVal] = React.useState<string>("");
 
-  // keep the field synced with parent (rounded to 1 decimal)
-  React.useEffect(() => {
-    const display = Number.isFinite(valuePct) ? valuePct.toFixed(1) : "";
-    setVal(display);
-  }, [valuePct]);
+    // keep the field synced with parent (rounded to 1 decimal)
+    React.useEffect(() => {
+      const display = Number.isFinite(valuePct) ? valuePct.toFixed(1) : "";
+      setVal(display);
+    }, [valuePct]);
 
-  return (
-    <div className="relative">
-      <input
-        type="text"                // no spinner
-        inputMode="decimal"        // mobile numeric keypad
-        className="w-full rounded-md border px-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
-        value={val}
-        onChange={(e) => {
-          const s = e.target.value;
-          setVal(s);
-          onChange(s);             // lets parent parse/clamp
-        }}
-        onBlur={() => {
-          const n = parseFloat(val.replace(",", "."));
-          if (!Number.isNaN(n)) {
-            const rounded = n.toFixed(1);
-            setVal(rounded);
-            onChange(rounded);
-          }
-        }}
-        aria-label="Passive rate percent"
-      />
-      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">
-        %
-      </span>
-    </div>
-  );
-};
-
+    return (
+      <div className="relative">
+        <input
+          type="text"                // remove native spinner
+          inputMode="decimal"        // mobile numeric keypad
+          className="w-full rounded-md border px-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+          value={val}
+          onChange={(e) => {
+            const s = e.target.value;
+            setVal(s);
+            onChange(s);             // lets parent parse/clamp
+          }}
+          onBlur={() => {
+            const n = parseFloat(val.replace(",", "."));
+            if (!Number.isNaN(n)) {
+              const rounded = n.toFixed(1);
+              setVal(rounded);
+              onChange(rounded);
+            }
+          }}
+          aria-label="Passive rate percent"
+        />
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
+      </div>
+    );
+  };
 
   type Band = { min: number; label: string; blurb: string };
   type CountryGuide = { name: string; currency: string; bands: Band[] };
 
+  // --- country guides (unchanged) ---
   const guides: CountryGuide[] = [
     { name: "Mexico", currency: "€", bands: [
       { min: 0, label: "basic urban", blurb: "Careful budgeting in secondary cities." },
@@ -224,7 +214,7 @@ const PercentInput = ({
   ];
   const travelBand = chooseBand(travelBands, monthlyPassive);
 
-  const [tab, setTab] = useState<"countries"|"itinerant">("countries");
+  const [tab, setTab] = React.useState<"countries"|"itinerant">("countries");
 
   return (
     <div>
@@ -235,7 +225,6 @@ const PercentInput = ({
         </div>
       </div>
 
-      {/* Countries */}
       {tab==='countries' && (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -246,7 +235,7 @@ const PercentInput = ({
 
             <div className="p-4 rounded-xl bg-slate-50 border">
               <div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div>
-              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive, currency)}</div>
+              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div>
               <div className="text-xs text-slate-500">Based on your projected pot × rate</div>
             </div>
 
@@ -266,7 +255,7 @@ const PercentInput = ({
                     <span className="text-xs rounded-full bg-slate-100 px-2 py-0.5">{band.label}</span>
                   </div>
                   <div className="text-sm text-slate-600">{band.blurb}</div>
-                  <div className="mt-2 text-xs text-slate-500">Income considered: {fmtCurrency(monthlyPassive, currency)} / mo</div>
+                  <div className="mt-2 text-xs text-slate-500">Income considered: {fmtCurrency(monthlyPassive)} / mo</div>
                 </div>
               );
             })}
@@ -274,7 +263,6 @@ const PercentInput = ({
         </div>
       )}
 
-      {/* Itinerant */}
       {tab==='itinerant' && (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -285,7 +273,7 @@ const PercentInput = ({
 
             <div className="p-4 rounded-xl bg-slate-50 border">
               <div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div>
-              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive, currency)}</div>
+              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div>
               <div className="text-xs text-slate-500">Projected pot × rate</div>
             </div>
 
