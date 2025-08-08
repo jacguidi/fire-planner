@@ -693,7 +693,7 @@ export default function App() {
       </footer>
     </div>
   );
-}
+
 /* ------------------------------- Solvers & UX ------------------------------ */
 function ContributionSolver({
   currentFunds, targetGoal, years, contributionIncreasePct, annualReturnPct, currency,
