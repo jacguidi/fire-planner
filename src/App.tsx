@@ -688,13 +688,12 @@ export default function App() {
         </Card>
       </main>
 
-      <footer className="max-w-6xl mx-auto px-4 py-8 text-xs text-slate-500">
+           <footer className="max-w-6xl mx-auto px-4 py-8 text-xs text-slate-500">
         Built for thoughtful planning. Assumptions are for illustration only and not financial advice.
       </footer>
     </div>
   );
 }
-
 /* ------------------------------- Solvers & UX ------------------------------ */
 function ContributionSolver({
   currentFunds, targetGoal, years, contributionIncreasePct, annualReturnPct, currency,
