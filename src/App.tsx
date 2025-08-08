@@ -397,7 +397,7 @@ export default function App() {
           </select>
         </div>
 
-       {/* Real / Nominal toggle (responsive) */}
+      {/* Real / Nominal toggle (responsive) */}
 <div className="flex flex-col gap-1">
   <div
     className="inline-flex rounded-md shadow-sm"
@@ -426,6 +426,12 @@ export default function App() {
       Nominal
     </button>
   </div>
+
+  {/* helper text for phones */}
+  <span className="text-[10px] text-gray-500 sm:hidden">
+    Real = inflation-adjusted, Nominal = not adjusted.
+  </span>
+</div>
 
   {/* helper text for phones */}
   <span className="text-[10px] text-gray-500 sm:hidden">
