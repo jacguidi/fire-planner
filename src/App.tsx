@@ -117,18 +117,18 @@ function LifestylePanel({ displayFinal = 0, rates: ratesProp }: { displayFinal?:
           className="w-full rounded-md border px-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
           value={val}
           onChange={(e) => {
-            const s = e.target.value;
-            setVal(s);
-            onChange(s);             // lets parent parse/clamp
-          }}
-          onBlur={() => {
-            const n = parseFloat(val.replace(",", "."));
-            if (!Number.isNaN(n)) {
-              const rounded = n.toFixed(1);
-              setVal(rounded);
-              onChange(rounded);
-            }
-          }}
+  const s = e.target.value.replace(",", ".");
+  if (/^[0-9]*\.?[0-9]*$/.test(s)) setVal(s); // local only; don't notify parent yet
+}}
+
+         onBlur={() => {
+  const n = parseFloat(val.replace(",", "."));
+  const clamped = Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : 0;
+  const rounded = clamped.toFixed(1);   // e.g., "5.0"
+  setVal(rounded);
+  onChange(rounded); // notify parent once, clean value
+}}
+
           aria-label="Passive rate percent"
         />
         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
