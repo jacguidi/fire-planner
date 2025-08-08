@@ -427,11 +427,24 @@ export default function App() {
     </button>
   </div>
 
-  {/* helper text for phones */}
-  <span className="text-[10px] text-gray-500 sm:hidden">
+{/* Real / Nominal */}
+<div className="flex items-center gap-2">
+  <ToggleGroup type="single" value={mode} onValueChange={setMode}>
+    <ToggleGroupItem value="real" aria-label="Real">Real</ToggleGroupItem>
+    <ToggleGroupItem value="nominal" aria-label="Nominal">Nominal</ToggleGroupItem>
+  </ToggleGroup>
+
+  {/* show caption only on ≥sm */}
+  <span className="hidden sm:inline text-xs text-muted-foreground">
     Real = inflation-adjusted, Nominal = not adjusted.
   </span>
 </div>
+
+{/* show caption only on mobile */}
+<p className="sm:hidden text-xs text-muted-foreground mt-1">
+  Real = inflation-adjusted, Nominal = not adjusted.
+</p>
+
 
       {/* Right: Export button (icon-only on phones) */}
       <div className="col-span-1 md:col-auto flex items-center justify-end gap-2">
