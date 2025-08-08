@@ -695,9 +695,39 @@ export default function App() {
   );
 
 /* ------------------------------- Solvers & UX ------------------------------ */
-function ContributionSolver({
-  currentFunds, targetGoal, years, contributionIncreasePct, annualReturnPct, currency,
-currentFunds:number; targetGoal:number; years:number; contributionIncreasePct:number; annualReturnPct:number; currency: CurrencyCode; }) {
+function ContributionSolver(
+  {
+    currentFunds,
+    targetGoal,
+    years,
+    contributionIncreasePct,
+    annualReturnPct,
+    currency
+  }: {
+    currentFunds: number;
+    targetGoal: number;
+    years: number;
+    contributionIncreasePct: number;
+    annualReturnPct: number;
+    currency: CurrencyCode;
+  }
+) {
+
+    targetGoal,
+    years,
+    contributionIncreasePct,
+    annualReturnPct,
+    currency
+  }: {
+    currentFunds: number;
+    targetGoal: number;
+    years: number;
+    contributionIncreasePct: number;
+    annualReturnPct: number;
+    currency: CurrencyCode;
+  }
+) {
+
   const [solved, setSolved] = useState<number | null>(null); const [busy, setBusy] = useState(false);
   const solve = () => {
     setBusy(true);
@@ -719,9 +749,24 @@ currentFunds:number; targetGoal:number; years:number; contributionIncreasePct:nu
   );
 }
 
-function TargetSolver({
-  currentFunds, years, monthlyContribution, contributionIncreasePct, annualReturnPct, currency,
-}:{ currentFunds:number; years:number; monthlyContribution:number; contributionIncreasePct:number; annualReturnPct:number; currency: CurrencyCode; }) {
+function TargetSolver(
+  {
+    currentFunds,
+    years,
+    monthlyContribution,
+    contributionIncreasePct,
+    annualReturnPct,
+    currency
+  }: {
+    currentFunds: number;
+    years: number;
+    monthlyContribution: number;
+    contributionIncreasePct: number;
+    annualReturnPct: number;
+    currency: CurrencyCode;
+  }
+) {
+
   const [solved, setSolved] = useState<number | null>(null); const [busy, setBusy] = useState(false);
   const solve = () => {
     setBusy(true);
