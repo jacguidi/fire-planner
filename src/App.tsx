@@ -373,7 +373,7 @@ export default function App() {
         </div>
         <div className="min-w-0">
           <h1 className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">
-            Easy FIRE Planner <span className="opacity-60">— Premium</span>
+            Easy FIRE Planner <span className="opacity-60">— Free</span>
           </h1>
           <p className="hidden sm:block text-xs sm:text-sm text-slate-500">
             Financial Independence, Retire Early made easy.
