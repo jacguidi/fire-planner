@@ -57,7 +57,7 @@ function LifestylePanel({ displayFinal = 0, rates: ratesProp }: { displayFinal?:
   const monthlyPassive = useMemo(() => (displayFinal * selectedRate) / 12, [displayFinal, selectedRate]);
 
   // --- helpers for the typeable % field ---
-  const MAX_RATE_PCT = 15; // adjust if you want a wider range
+  const MAX_RATE_PCT = 100; // adjust if you want a wider range
   const pctToDec = (pct: number) => pct / 100;
   const decToPct = (dec: number) => dec * 100;
   const handleRateInput = (raw: string) => {
