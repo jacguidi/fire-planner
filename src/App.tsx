@@ -711,6 +711,7 @@ function ContributionSolver({
   currency: CurrencyCode;
 }) {
 
+
     targetGoal,
     years,
     contributionIncreasePct,
