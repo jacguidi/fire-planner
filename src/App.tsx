@@ -357,7 +357,7 @@ export default function App() {
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
                 Easy FIRE Planner <span className="opacity-60">— Free</span>
               </h1>
-              <p className="text-sm text-slate-500">Plan, project, and sanity-check your path to financial independence.</p>
+              <p className="text-sm text-slate-500">Financial Independence, Retire Early made easy.</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
