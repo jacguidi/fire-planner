@@ -433,12 +433,6 @@ export default function App() {
   </span>
 </div>
 
-  {/* helper text for phones */}
-  <span className="text-[10px] text-gray-500 sm:hidden">
-    Real = inflation-adjusted, Nominal = not adjusted.
-  </span>
-</div>
-
       {/* Right: Export button (icon-only on phones) */}
       <div className="col-span-1 md:col-auto flex items-center justify-end gap-2">
         {/* icon-only on xs */}
