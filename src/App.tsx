@@ -336,10 +336,9 @@ useEffect(() => { setYearsStr(String(years ?? "")); }, [years]);
 const [monthlyContributionStr, setMonthlyContributionStr] = useState(String(monthlyContribution ?? ""));
 useEffect(() => { setMonthlyContributionStr(String(monthlyContribution ?? "")); }, [monthlyContribution]);
 
+// Keep this — it was already in your code
 const [showReal, setShowReal] = useState(true);
 
-
-  const [showReal, setShowReal] = useState(true);
   const [rates, setRates] = useState<number[]>([0.03, 0.035, 0.04, 0.05]);
 
   // currency preference (persist to localStorage)
