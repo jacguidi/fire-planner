@@ -397,12 +397,12 @@ export default function App() {
           </select>
         </div>
 
-      {/* Real / Nominal toggle (responsive) */}
-<div className="flex flex-col gap-1">
+    {/* Real / Nominal toggle */}
+<div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
   <div
-    className="inline-flex rounded-md shadow-sm"
+    className="inline-flex rounded-md shadow-sm overflow-hidden"
     role="group"
-    title="Choose between inflation-adjusted (real) or raw (nominal) currency."
+    aria-label="Choose between inflation-adjusted (real) or raw (nominal) currency"
   >
     <button
       type="button"
@@ -410,27 +410,24 @@ export default function App() {
       className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
         showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
       } rounded-l-md`}
-      aria-pressed={showReal}
     >
       Real
     </button>
-
     <button
       type="button"
       onClick={() => setShowReal(false)}
-      className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 -ml-px ${
+      className={`px-3 py-1 text-xs sm:text-sm font-medium border border-gray-300 ${
         !showReal ? "bg-slate-900 text-white" : "bg-white text-gray-700"
       } rounded-r-md`}
-      aria-pressed={!showReal}
     >
       Nominal
     </button>
   </div>
 
-  {/* helper text for phones */}
-  <span className="text-[10px] text-gray-500 sm:hidden">
-    Real = inflation-adjusted, Nominal = not adjusted.
-  </span>
+  {/* helper – visible on phones only */}
+  <p className="text-[10px] leading-3 text-gray-500 sm:hidden m-0">
+    Real = inflation-adjusted; Nominal = not adjusted.
+  </p>
 </div>
 
         {/* Right: Export button (icon-only on phones) */}
