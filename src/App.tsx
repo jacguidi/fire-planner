@@ -51,19 +51,214 @@ function passiveIncomeTable(finalPot: number, rates: number[]) { return rates.ma
 function LifestylePanel({ displayFinal = 0, rates: ratesProp }: { displayFinal?: number; rates?: number[] }) {
   const defaultRates = [0.03, 0.035, 0.04, 0.05];
   const rates = (Array.isArray(ratesProp) && ratesProp.length > 0) ? ratesProp : defaultRates;
+
+  // keep internal state as a DECIMAL (0.04 = 4%), but show input as a PERCENT number (4.0)
   const [selectedRate, setSelectedRate] = useState<number>(rates[2] ?? rates[rates.length - 1] ?? 0.04);
   const monthlyPassive = useMemo(() => (displayFinal * selectedRate) / 12, [displayFinal, selectedRate]);
-  type Band = { min: number; label: string; blurb: string }; type CountryGuide = { name: string; currency: string; bands: Band[] };
-  const guides: CountryGuide[] = [{ name: "Mexico", currency: "€", bands: [{ min: 0, label: "basic urban", blurb: "Careful budgeting in secondary cities." },{ min: 3000, label: "comfortable", blurb: "Nice apartment, dining out often in major cities." },{ min: 6000, label: "affluent", blurb: "High-end neighborhoods in CDMX/Monterrey; frequent travel." },{ min: 8000, label: "luxury coastal/Polanco", blurb: "Premium areas on the coast or Polanco-level lifestyle." },]},{ name: "Portugal", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Modest life in smaller towns." },{ min: 3000, label: "comfortable", blurb: "Good life in Lisbon/Porto; regular eating out & hobbies." },{ min: 5000, label: "affluent", blurb: "Prime areas, private healthcare, frequent European trips." },{ min: 8000, label: "luxury", blurb: "Top coastal spots (Cascais/Algarve), premium everything." },]},{ name: "Turkey", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Prudent spending in provincial cities." },{ min: 2500, label: "comfortable", blurb: "Strong lifestyle in Izmir/Antalya; frequent dining out." },{ min: 4500, label: "affluent", blurb: "Desirable Istanbul neighborhoods; private services." },{ min: 7000, label: "luxury Bosphorus", blurb: "Premium coastal/central Istanbul living, travel often." },]},{ name: "Czechia", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Modest life; careful budgeting." },{ min: 3000, label: "comfortable", blurb: "Karlín/Vinohrady vibe; fitness, cafes, short trips." },{ min: 5000, label: "affluent", blurb: "Prime central living; premium groceries & hobbies." },{ min: 8000, label: "luxury", blurb: "Top-tier apartment, frequent EU getaways, concierge vibe." },]},{ name: "Italy", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Smaller towns with prudent spending." },{ min: 3500, label: "comfortable", blurb: "Good standard in Milan/Rome; regular aperitivi & travel." },{ min: 6000, label: "affluent", blurb: "Prime zones, premium dining, domestic help." },{ min: 9000, label: "luxury", blurb: "Top neighborhoods; frequent EU trips, high-end services." },]},{ name: "Spain", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Modest lifestyle in smaller cities." },{ min: 3200, label: "comfortable", blurb: "Madrid/Barcelona good life; dining out & sports." },{ min: 5500, label: "affluent", blurb: "Prime barrio; private healthcare, frequent travel." },{ min: 8500, label: "luxury", blurb: "Top coastal/central addresses; premium everything." },]},{ name: "Thailand", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Simple life upcountry." },{ min: 2500, label: "comfortable", blurb: "Very good life in Chiang Mai/Phuket." },{ min: 4500, label: "affluent", blurb: "Premium Bangkok/Phuket lifestyle; frequent travel." },{ min: 7000, label: "luxury", blurb: "High-end condo + concierge services, top dining." },]},{ name: "UK", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Tight budget in many areas." },{ min: 5000, label: "comfortable", blurb: "Good standard outside Zone 1; regular trips." },{ min: 8000, label: "affluent", blurb: "Prime London suburbs or strong central flat." },{ min: 12000, label: "luxury", blurb: "Central London high-end lifestyle; frequent int'l travel." },]},{ name: "India", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Lean lifestyle in Tier-2 cities." },{ min: 2000, label: "comfortable", blurb: "Comfortable in Bangalore/Pune; frequent dining out." },{ min: 4000, label: "affluent", blurb: "Premium neighborhoods in Mumbai/Delhi; domestic help." },{ min: 7000, label: "luxury", blurb: "Top enclaves; business-class travel across India." },]},{ name: "Greece", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Modest life in mainland towns." },{ min: 2800, label: "comfortable", blurb: "Athens/Thessaloniki with regular island trips." },{ min: 5000, label: "affluent", blurb: "Prime Athens/Crete; private services." },{ min: 8000, label: "luxury islands", blurb: "Santorini/Mykonos-level lifestyle in season." },]},{ name: "Brazil", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Careful budgeting in smaller cities." },{ min: 2500, label: "comfortable", blurb: "Good life in Curitiba/Florianópolis; dining & sports." },{ min: 4500, label: "affluent", blurb: "Premium areas in São Paulo/Rio; private healthcare." },{ min: 8000, label: "luxury beachfront", blurb: "Ipanema/Leblon vibe; frequent domestic flights." },]},{ name: "Indonesia", currency: "€", bands: [{ min: 0, label: "basic", blurb: "Simple life in secondary islands." },{ min: 2000, label: "comfortable", blurb: "Very good life in Bali/Yogyakarta." },{ min: 4000, label: "affluent", blurb: "Premium Bali/Central Jakarta lifestyle." },{ min: 6500, label: "luxury", blurb: "Villa-level Bali; frequent regional travel." },]},];
-  const chooseBand = (bands: Band[], income: number) => { const sorted = [...bands].sort((a, b) => a.min - b.min); return sorted.reduce((acc, b) => (income >= b.min ? b : acc), sorted[0]); };
-  const travelBands: Band[] = [{ min: 0, label: "lean nomad", blurb: "Slow travel in low-cost regions, hostels/guesthouses, economy flights a few times a year." },{ min: 3000, label: "comfortable nomad", blurb: "1–2 months per location, decent apartments, weekly coworking, regional flights every 6–8 weeks." },{ min: 6000, label: "premium nomad", blurb: "4★ hotels or upscale apartments, monthly intercontinental trips, occasional business-class upgrades." },{ min: 10000, label: "luxury nomad", blurb: "5★ hotels/villas, frequent business class, guided experiences, concierge-style logistics." },];
+
+  // --- helpers for the typeable % field ---
+  const MAX_RATE_PCT = 15; // adjust if you want a wider range
+  const pctToDec = (pct: number) => pct / 100;
+  const decToPct = (dec: number) => dec * 100;
+  const handleRateInput = (raw: string) => {
+    const v = parseFloat(raw);
+    if (Number.isNaN(v)) {
+      setSelectedRate(0);
+      return;
+    }
+    const clamped = Math.max(0, Math.min(MAX_RATE_PCT, v));
+    setSelectedRate(pctToDec(clamped));
+  };
+
+  // small presentational helper to add a % suffix
+  const PercentInput = ({ valuePct, onChange }: { valuePct: number; onChange: (v: string) => void }) => (
+    <div className="relative">
+      <Input
+        type="number"
+        step={0.1}
+        min={0}
+        max={MAX_RATE_PCT}
+        value={Number.isFinite(valuePct) ? valuePct : 0}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label="Passive rate percent"
+      />
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
+    </div>
+  );
+
+  type Band = { min: number; label: string; blurb: string };
+  type CountryGuide = { name: string; currency: string; bands: Band[] };
+
+  const guides: CountryGuide[] = [
+    { name: "Mexico", currency: "€", bands: [
+      { min: 0, label: "basic urban", blurb: "Careful budgeting in secondary cities." },
+      { min: 3000, label: "comfortable", blurb: "Nice apartment, dining out often in major cities." },
+      { min: 6000, label: "affluent", blurb: "High-end neighborhoods in CDMX/Monterrey; frequent travel." },
+      { min: 8000, label: "luxury coastal/Polanco", blurb: "Premium areas on the coast or Polanco-level lifestyle." },
+    ]},
+    { name: "Portugal", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Modest life in smaller towns." },
+      { min: 3000, label: "comfortable", blurb: "Good life in Lisbon/Porto; regular eating out & hobbies." },
+      { min: 5000, label: "affluent", blurb: "Prime areas, private healthcare, frequent European trips." },
+      { min: 8000, label: "luxury", blurb: "Top coastal spots (Cascais/Algarve), premium everything." },
+    ]},
+    { name: "Turkey", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Prudent spending in provincial cities." },
+      { min: 2500, label: "comfortable", blurb: "Strong lifestyle in Izmir/Antalya; frequent dining out." },
+      { min: 4500, label: "affluent", blurb: "Desirable Istanbul neighborhoods; private services." },
+      { min: 7000, label: "luxury Bosphorus", blurb: "Premium coastal/central Istanbul living, travel often." },
+    ]},
+    { name: "Czechia", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Modest life; careful budgeting." },
+      { min: 3000, label: "comfortable", blurb: "Karlín/Vinohrady vibe; fitness, cafes, short trips." },
+      { min: 5000, label: "affluent", blurb: "Prime central living; premium groceries & hobbies." },
+      { min: 8000, label: "luxury", blurb: "Top-tier apartment, frequent EU getaways, concierge vibe." },
+    ]},
+    { name: "Italy", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Smaller towns with prudent spending." },
+      { min: 3500, label: "comfortable", blurb: "Good standard in Milan/Rome; regular aperitivi & travel." },
+      { min: 6000, label: "affluent", blurb: "Prime zones, premium dining, domestic help." },
+      { min: 9000, label: "luxury", blurb: "Top neighborhoods; frequent EU trips, high-end services." },
+    ]},
+    { name: "Spain", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Modest lifestyle in smaller cities." },
+      { min: 3200, label: "comfortable", blurb: "Madrid/Barcelona good life; dining out & sports." },
+      { min: 5500, label: "affluent", blurb: "Prime barrio; private healthcare, frequent travel." },
+      { min: 8500, label: "luxury", blurb: "Top coastal/central addresses; premium everything." },
+    ]},
+    { name: "Thailand", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Simple life upcountry." },
+      { min: 2500, label: "comfortable", blurb: "Very good life in Chiang Mai/Phuket." },
+      { min: 4500, label: "affluent", blurb: "Premium Bangkok/Phuket lifestyle; frequent travel." },
+      { min: 7000, label: "luxury", blurb: "High-end condo + concierge services, top dining." },
+    ]},
+    { name: "UK", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Tight budget in many areas." },
+      { min: 5000, label: "comfortable", blurb: "Good standard outside Zone 1; regular trips." },
+      { min: 8000, label: "affluent", blurb: "Prime London suburbs or strong central flat." },
+      { min: 12000, label: "luxury", blurb: "Central London high-end lifestyle; frequent int'l travel." },
+    ]},
+    { name: "India", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Lean lifestyle in Tier-2 cities." },
+      { min: 2000, label: "comfortable", blurb: "Comfortable in Bangalore/Pune; frequent dining out." },
+      { min: 4000, label: "affluent", blurb: "Premium neighborhoods in Mumbai/Delhi; domestic help." },
+      { min: 7000, label: "luxury", blurb: "Top enclaves; business-class travel across India." },
+    ]},
+    { name: "Greece", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Modest life in mainland towns." },
+      { min: 2800, label: "comfortable", blurb: "Athens/Thessaloniki with regular island trips." },
+      { min: 5000, label: "affluent", blurb: "Prime Athens/Crete; private services." },
+      { min: 8000, label: "luxury islands", blurb: "Santorini/Mykonos-level lifestyle in season." },
+    ]},
+    { name: "Brazil", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Careful budgeting in smaller cities." },
+      { min: 2500, label: "comfortable", blurb: "Good life in Curitiba/Florianópolis; dining & sports." },
+      { min: 4500, label: "affluent", blurb: "Premium areas in São Paulo/Rio; private healthcare." },
+      { min: 8000, label: "luxury beachfront", blurb: "Ipanema/Leblon vibe; frequent domestic flights." },
+    ]},
+    { name: "Indonesia", currency: "€", bands: [
+      { min: 0, label: "basic", blurb: "Simple life in secondary islands." },
+      { min: 2000, label: "comfortable", blurb: "Very good life in Bali/Yogyakarta." },
+      { min: 4000, label: "affluent", blurb: "Premium Bali/Central Jakarta lifestyle." },
+      { min: 6500, label: "luxury", blurb: "Villa-level Bali; frequent regional travel." },
+    ]},
+  ];
+
+  const chooseBand = (bands: Band[], income: number) => {
+    const sorted = [...bands].sort((a, b) => a.min - b.min);
+    return sorted.reduce((acc, b) => (income >= b.min ? b : acc), sorted[0]);
+  };
+
+  const travelBands: Band[] = [
+    { min: 0, label: "lean nomad", blurb: "Slow travel in low-cost regions, hostels/guesthouses, economy flights a few times a year." },
+    { min: 3000, label: "comfortable nomad", blurb: "1–2 months per location, decent apartments, weekly coworking, regional flights every 6–8 weeks." },
+    { min: 6000, label: "premium nomad", blurb: "4★ hotels or upscale apartments, monthly intercontinental trips, occasional business-class upgrades." },
+    { min: 10000, label: "luxury nomad", blurb: "5★ hotels/villas, frequent business class, guided experiences, concierge-style logistics." },
+  ];
   const travelBand = chooseBand(travelBands, monthlyPassive);
+
   const [tab, setTab] = useState<"countries"|"itinerant">("countries");
-  return (<div><div className="flex items-center justify-between"><div className="inline-flex rounded-lg border bg-white"><button className={`px-3 py-1.5 text-sm rounded-lg ${tab==='countries'?'bg-slate-900 text-white':'text-slate-700 hover:bg-slate-100'}`} onClick={()=>setTab('countries')}>Countries</button><button className={`px-3 py-1.5 text-sm rounded-lg ${tab==='itinerant'?'bg-slate-900 text-white':'text-slate-700 hover:bg-slate-100'}`} onClick={()=>setTab('itinerant')}>Itinerant lifestyle</button></div></div>
-    {tab==='countries' && (<div><div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">Passive rate</div><select className="border rounded-md px-3 py-2 w-full" value={selectedRate} onChange={(e)=>setSelectedRate(Number(e.target.value))}>{rates.map(r => <option key={r} value={r}>{(r*100).toFixed(1)}%</option>)}</select></div><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div><div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div><div className="text-xs text-slate-500">Based on your projected pot × rate</div></div><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">How to read</div><div className="text-sm text-slate-600">Labels are directional, not promises. 1 = basic • 2 = comfortable • 3 = affluent • 4 = luxury</div></div></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">{guides.map(g => { const band = chooseBand(g.bands, monthlyPassive); return (<div key={g.name} className="p-4 rounded-xl border bg-white"><div className="flex items-center justify-between mb-1"><div className="font-medium">{g.name}</div><span className="text-xs rounded-full bg-slate-100 px-2 py-0.5">{band.label}</span></div><div className="text-sm text-slate-600">{band.blurb}</div><div className="mt-2 text-xs text-slate-500">Income considered: {fmtCurrency(monthlyPassive)} / mo</div></div>); })}</div></div>)}
-    {tab==='itinerant' && (<div><div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">Passive rate</div><select className="border rounded-md px-3 py-2 w-full" value={selectedRate} onChange={(e)=>setSelectedRate(Number(e.target.value))}>{rates.map(r => <option key={r} value={r}>{(r*100).toFixed(1)}%</option>)}</select></div><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div><div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div><div className="text-xs text-slate-500">Projected pot × rate</div></div><div className="p-4 rounded-xl bg-slate-50 border"><div className="text-xs uppercase text-slate-500">Travel tier</div><div className="text-sm text-slate-600">{travelBand.label}</div></div></div><div className="mt-3 p-4 rounded-xl border bg-white"><div className="text-sm font-medium mb-1">What this buys, roughly</div><div className="text-sm text-slate-600">{travelBand.blurb}</div><div className="text-xs text-slate-500 mt-2">Directional only; trip style, seasonality, and fx rates move the needle a lot.</div></div></div>)}</div>);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <div className="inline-flex rounded-lg border bg-white">
+          <button className={`px-3 py-1.5 text-sm rounded-lg ${tab==='countries'?'bg-slate-900 text-white':'text-slate-700 hover:bg-slate-100'}`} onClick={()=>setTab('countries')}>Countries</button>
+          <button className={`px-3 py-1.5 text-sm rounded-lg ${tab==='itinerant'?'bg-slate-900 text-white':'text-slate-700 hover:bg-slate-100'}`} onClick={()=>setTab('itinerant')}>Itinerant lifestyle</button>
+        </div>
+      </div>
+
+      {/* Countries tab */}
+      {tab==='countries' && (
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">Passive rate</div>
+              <PercentInput valuePct={decToPct(selectedRate)} onChange={handleRateInput} />
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div>
+              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div>
+              <div className="text-xs text-slate-500">Based on your projected pot × rate</div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">How to read</div>
+              <div className="text-sm text-slate-600">Labels are directional, not promises. 1 = basic • 2 = comfortable • 3 = affluent • 4 = luxury</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+            {guides.map(g => {
+              const band = chooseBand(g.bands, monthlyPassive);
+              return (
+                <div key={g.name} className="p-4 rounded-xl border bg-white">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="font-medium">{g.name}</div>
+                    <span className="text-xs rounded-full bg-slate-100 px-2 py-0.5">{band.label}</span>
+                  </div>
+                  <div className="text-sm text-slate-600">{band.blurb}</div>
+                  <div className="mt-2 text-xs text-slate-500">Income considered: {fmtCurrency(monthlyPassive)} / mo</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Itinerant tab */}
+      {tab==='itinerant' && (
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">Passive rate</div>
+              <PercentInput valuePct={decToPct(selectedRate)} onChange={handleRateInput} />
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">Monthly passive (approx)</div>
+              <div className="text-lg font-semibold">{fmtCurrency(monthlyPassive)}</div>
+              <div className="text-xs text-slate-500">Projected pot × rate</div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border">
+              <div className="text-xs uppercase text-slate-500">Travel tier</div>
+              <div className="text-sm text-slate-600">{travelBand.label}</div>
+            </div>
+          </div>
+
+          <div className="mt-3 p-4 rounded-xl border bg-white">
+            <div className="text-sm font-medium mb-1">What this buys, roughly</div>
+            <div className="text-sm text-slate-600">{travelBand.blurb}</div>
+            <div className="text-xs text-slate-500 mt-2">Directional only; trip style, seasonality, and fx rates move the needle a lot.</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
+
 
 export default function App() {
   const [currentFunds, setCurrentFunds] = useState(100000);
