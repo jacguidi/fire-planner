@@ -317,6 +317,17 @@ export default function App() {
   const [contributionIncreasePct, setContributionIncreasePct] = useState(5);
   const [annualReturnPct, setAnnualReturnPct] = useState(6);
   const [annualInflationPct, setAnnualInflationPct] = useState(2);
+
+// 🔽 Add these here
+const [contributionIncreaseStr, setContributionIncreaseStr] = useState(String(contributionIncreasePct ?? ""));
+useEffect(() => { setContributionIncreaseStr(String(contributionIncreasePct ?? "")); }, [contributionIncreasePct]);
+
+const [annualReturnStr, setAnnualReturnStr] = useState(String(annualReturnPct ?? ""));
+useEffect(() => { setAnnualReturnStr(String(annualReturnPct ?? "")); }, [annualReturnPct]);
+
+const [annualInflationStr, setAnnualInflationStr] = useState(String(annualInflationPct ?? ""));
+useEffect(() => { setAnnualInflationStr(String(annualInflationPct ?? "")); }, [annualInflationPct]);
+
   const [showReal, setShowReal] = useState(true);
   const [rates, setRates] = useState<number[]>([0.03, 0.035, 0.04, 0.05]);
 
@@ -496,18 +507,67 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div title="Automatic raise to your monthly contribution once per year.">
                 <Label>Annual increase in contribution (%)</Label>
-                <Input type="number" value={contributionIncreasePct} onChange={(e)=>setContributionIncreasePct(Number(e.target.value))} min={0} step={0.5} />
+                <Input
+  type="text"
+  inputMode="decimal"
+  value={contributionIncreaseStr}
+  onChange={(e) => {
+    const v = e.target.value.replace(",", ".");
+    if (/^[0-9]*\.?[0-9]*$/.test(v)) setContributionIncreaseStr(v);
+  }}
+  onBlur={() => {
+    const n = Math.max(0, Math.min(100, parseFloat(contributionIncreaseStr)));
+    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+    setContributionIncreaseStr(String(clean));
+    setContributionIncreasePct(clean);
+  }}
+  onFocus={(e) => e.currentTarget.select()}
+/>
+
               </div>
               <div title="Expected average annual return during accumulation (before fees/taxes).">
                 <Label>Expected annual return (%)</Label>
-                <Input type="number" value={annualReturnPct} onChange={(e)=>setAnnualReturnPct(Number(e.target.value))} step={0.1} />
+               <Input
+  type="text"
+  inputMode="decimal"
+  value={annualReturnStr}
+  onChange={(e) => {
+    const v = e.target.value.replace(",", ".");
+    if (/^[0-9]*\.?[0-9]*$/.test(v)) setAnnualReturnStr(v);
+  }}
+  onBlur={() => {
+    const n = Math.max(0, Math.min(100, parseFloat(annualReturnStr)));
+    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+    setAnnualReturnStr(String(clean));
+    setAnnualReturnPct(clean);
+  }}
+  onFocus={(e) => e.currentTarget.select()}
+/>
+
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div title="Assumed average annual inflation. Real view subtracts this from growth.">
                 <Label>Assumed annual inflation (%)</Label>
-                <Input type="number" value={annualInflationPct} onChange={(e)=>setAnnualInflationPct(Number(e.target.value))} step={0.1} />
+                <Input
+  type="text"
+  inputMode="decimal"
+  value={annualInflationStr}
+  onChange={(e) => {
+    const v = e.target.value.replace(",", ".");
+    if (/^[0-9]*\.?[0-9]*$/.test(v)) setAnnualInflationStr(v);
+  }}
+  onBlur={() => {
+    // use 0–20 as a sensible clamp for CPI; change max if you want
+    const n = Math.max(0, Math.min(20, parseFloat(annualInflationStr)));
+    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+    setAnnualInflationStr(String(clean));
+    setAnnualInflationPct(clean);
+  }}
+  onFocus={(e) => e.currentTarget.select()}
+/>
+
               </div>
               <div className="text-sm text-slate-500 flex items-center">
                 Real view discounts inflation continuously; nominal view shows raw values.
