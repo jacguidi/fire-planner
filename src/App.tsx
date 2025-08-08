@@ -328,6 +328,17 @@ useEffect(() => { setAnnualReturnStr(String(annualReturnPct ?? "")); }, [annualR
 const [annualInflationStr, setAnnualInflationStr] = useState(String(annualInflationPct ?? ""));
 useEffect(() => { setAnnualInflationStr(String(annualInflationPct ?? "")); }, [annualInflationPct]);
 
+// Years (string while typing)
+const [yearsStr, setYearsStr] = useState(String(years ?? ""));
+useEffect(() => { setYearsStr(String(years ?? "")); }, [years]);
+
+// Monthly contribution (string while typing)
+const [monthlyContributionStr, setMonthlyContributionStr] = useState(String(monthlyContribution ?? ""));
+useEffect(() => { setMonthlyContributionStr(String(monthlyContribution ?? "")); }, [monthlyContribution]);
+
+const [showReal, setShowReal] = useState(true);
+
+
   const [showReal, setShowReal] = useState(true);
   const [rates, setRates] = useState<number[]>([0.03, 0.035, 0.04, 0.05]);
 
@@ -496,11 +507,43 @@ useEffect(() => { setAnnualInflationStr(String(annualInflationPct ?? "")); }, [a
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div title="How many years you want to project forward.">
                 <Label>Years to project</Label>
-                <Input type="number" value={years} onChange={(e)=>setYears(Number(e.target.value))} min={1} />
+               <Input
+  type="text"
+  inputMode="numeric"
+  value={yearsStr}
+  onChange={(e) => {
+    const v = e.target.value;
+    if (/^[0-9]*$/.test(v)) setYearsStr(v); // allow empty while typing
+  }}
+  onBlur={() => {
+    const n = Math.max(1, Math.min(60, parseInt(yearsStr, 10))); // clamp 1–60
+    const clean = Number.isFinite(n) ? String(n) : "1";
+    setYearsStr(clean);
+    setYears(Number(clean));
+  }}
+  onFocus={(e) => e.currentTarget.select()}
+/>
+
               </div>
               <div title="How much you invest each month (before any annual step-ups).">
                 <Label>Monthly contribution</Label>
-                <Input type="number" value={monthlyContribution} onChange={(e)=>setMonthlyContribution(Number(e.target.value))} min={0} />
+                <Input
+  type="text"
+  inputMode="decimal"
+  value={monthlyContributionStr}
+  onChange={(e) => {
+    const v = e.target.value.replace(",", ".");
+    if (/^[0-9]*\.?[0-9]*$/.test(v)) setMonthlyContributionStr(v);
+  }}
+  onBlur={() => {
+    const n = Math.max(0, parseFloat(monthlyContributionStr));
+    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+    setMonthlyContributionStr(String(clean));
+    setMonthlyContribution(clean);
+  }}
+  onFocus={(e) => e.currentTarget.select()}
+/>
+
               </div>
             </div>
 
