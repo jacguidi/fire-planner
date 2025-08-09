@@ -500,34 +500,46 @@ const [showReal, setShowReal] = useState(true);
           <CardHeader><CardTitle>Inputs</CardTitle></CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div title="How much you already have invested/liquid towards FIRE.">
+                <div title="How much you already have invested/liquid towards FIRE.">
                 <Label>Current funds</Label>
                 <Input
-  type="number"
-  value={currentFunds}
- onChange={(e) => {
-  trackStart();
-  const value = e.target.value;
-  setCurrentFunds(value === "" ? "" : Number(value));
-}}
-
-  min={0}
-/>
+                  type="text"
+                  inputMode="decimal"
+                  value={currentFundsStr}
+                  onChange={(e) => {
+                    trackStart();
+                    const v = e.target.value.replace(",", ".");
+                    if (/^[0-9]*\.?[0-9]*$/.test(v)) setCurrentFundsStr(v);
+                  }}
+                  onBlur={() => {
+                    const n = Math.max(0, parseFloat(currentFundsStr));
+                    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+                    setCurrentFundsStr(String(clean));
+                    setCurrentFunds(clean);
+                  }}
+                  onFocus={(e) => e.currentTarget.select()}
+                />
 
               </div>
               <div title="Your target portfolio size to become financially independent.">
                 <Label>Target goal ({currency})</Label>
                 <Input
-  type="number"
-  value={targetGoal}
-  onChange={(e) => {
-  trackStart();
-  const value = e.target.value;
-  setTargetGoal(value === "" ? "" : Number(value));
-}}
-
-  min={0}
-/>
+                  type="text"
+                  inputMode="decimal"
+                  value={targetGoalStr}
+                  onChange={(e) => {
+                    trackStart();
+                    const v = e.target.value.replace(",", ".");
+                    if (/^[0-9]*\.?[0-9]*$/.test(v)) setTargetGoalStr(v);
+                  }}
+                  onBlur={() => {
+                    const n = Math.max(0, parseFloat(targetGoalStr));
+                    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+                    setTargetGoalStr(String(clean));
+                    setTargetGoal(clean);
+                  }}
+                  onFocus={(e) => e.currentTarget.select()}
+                />
 
               </div>
             </div>
