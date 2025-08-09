@@ -331,6 +331,13 @@ useEffect(() => { setAnnualInflationStr(String(annualInflationPct ?? "")); }, [a
 // Years (string while typing)
 const [yearsStr, setYearsStr] = useState(String(years ?? ""));
 useEffect(() => { setYearsStr(String(years ?? "")); }, [years]);
+// Current funds (string while typing)
+const [currentFundsStr, setCurrentFundsStr] = useState(String(currentFunds ?? ""));
+useEffect(() => { setCurrentFundsStr(String(currentFunds ?? "")); }, [currentFunds]);
+
+// Target goal (string while typing)
+const [targetGoalStr, setTargetGoalStr] = useState(String(targetGoal ?? ""));
+useEffect(() => { setTargetGoalStr(String(targetGoal ?? "")); }, [targetGoal]);
 
 // Monthly contribution (string while typing)
 const [monthlyContributionStr, setMonthlyContributionStr] = useState(String(monthlyContribution ?? ""));
@@ -498,10 +505,10 @@ const [showReal, setShowReal] = useState(true);
                 <Input
   type="number"
   value={currentFunds}
-  onChange={(e) => {
+ onChange={(e) => {
   trackStart();
   const value = e.target.value;
-  setCurrentFunds(value === "" ? 0 : Number(value));
+  setCurrentFunds(value === "" ? "" : Number(value));
 }}
 
   min={0}
@@ -516,7 +523,7 @@ const [showReal, setShowReal] = useState(true);
   onChange={(e) => {
   trackStart();
   const value = e.target.value;
-  setTargetGoal(value === "" ? 0 : Number(value));
+  setTargetGoal(value === "" ? "" : Number(value));
 }}
 
   min={0}
@@ -533,9 +540,11 @@ const [showReal, setShowReal] = useState(true);
   inputMode="numeric"
   value={yearsStr}
   onChange={(e) => {
-    const v = e.target.value;
-    if (/^[0-9]*$/.test(v)) setYearsStr(v); // allow empty while typing
-  }}
+  trackStart();                               // ← added
+  const v = e.target.value;
+  if (/^[0-9]*$/.test(v)) setYearsStr(v);     // allow empty while typing
+}}
+
   onBlur={() => {
     const n = Math.max(1, Math.min(60, parseInt(yearsStr, 10))); // clamp 1–60
     const clean = Number.isFinite(n) ? String(n) : "1";
