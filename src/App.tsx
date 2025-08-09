@@ -498,7 +498,12 @@ const [showReal, setShowReal] = useState(true);
                 <Input
   type="number"
   value={currentFunds}
-  onChange={(e) => { trackStart(); setCurrentFunds(Number(e.target.value)); }}
+  onChange={(e) => {
+  trackStart();
+  const value = e.target.value;
+  setCurrentFunds(value === "" ? 0 : Number(value));
+}}
+
   min={0}
 />
 
@@ -508,7 +513,12 @@ const [showReal, setShowReal] = useState(true);
                 <Input
   type="number"
   value={targetGoal}
-  onChange={(e) => { trackStart(); setTargetGoal(Number(e.target.value)); }}
+  onChange={(e) => {
+  trackStart();
+  const value = e.target.value;
+  setTargetGoal(value === "" ? 0 : Number(value));
+}}
+
   min={0}
 />
 
