@@ -495,23 +495,11 @@ const [showReal, setShowReal] = useState(true);
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div title="How much you already have invested/liquid towards FIRE.">
                 <Label>Current funds</Label>
-                <Input
-  type="number"
-  value={currentFunds}
-  onChange={(e) => { trackStart(); setCurrentFunds(Number(e.target.value)); }}
-  min={0}
-/>
-
+                <Input type="number" value={currentFunds} onChange={(e)=>setCurrentFunds(Number(e.target.value))} min={0} />
               </div>
               <div title="Your target portfolio size to become financially independent.">
                 <Label>Target goal ({currency})</Label>
-                <Input
-  type="number"
-  value={targetGoal}
-  onChange={(e) => { trackStart(); setTargetGoal(Number(e.target.value)); }}
-  min={0}
-/>
-
+                <Input type="number" value={targetGoal} onChange={(e)=>setTargetGoal(Number(e.target.value))} min={0} />
               </div>
             </div>
 
