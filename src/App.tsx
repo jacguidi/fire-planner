@@ -331,13 +331,6 @@ useEffect(() => { setAnnualInflationStr(String(annualInflationPct ?? "")); }, [a
 // Years (string while typing)
 const [yearsStr, setYearsStr] = useState(String(years ?? ""));
 useEffect(() => { setYearsStr(String(years ?? "")); }, [years]);
-// Current funds (string while typing)
-const [currentFundsStr, setCurrentFundsStr] = useState(String(currentFunds ?? ""));
-useEffect(() => { setCurrentFundsStr(String(currentFunds ?? "")); }, [currentFunds]);
-
-// Target goal (string while typing)
-const [targetGoalStr, setTargetGoalStr] = useState(String(targetGoal ?? ""));
-useEffect(() => { setTargetGoalStr(String(targetGoal ?? "")); }, [targetGoal]);
 
 // Monthly contribution (string while typing)
 const [monthlyContributionStr, setMonthlyContributionStr] = useState(String(monthlyContribution ?? ""));
@@ -500,46 +493,24 @@ const [showReal, setShowReal] = useState(true);
           <CardHeader><CardTitle>Inputs</CardTitle></CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div title="How much you already have invested/liquid towards FIRE.">
+              <div title="How much you already have invested/liquid towards FIRE.">
                 <Label>Current funds</Label>
                 <Input
-                  type="text"
-                  inputMode="decimal"
-                  value={currentFundsStr}
-                  onChange={(e) => {
-                    trackStart();
-                    const v = e.target.value.replace(",", ".");
-                    if (/^[0-9]*\.?[0-9]*$/.test(v)) setCurrentFundsStr(v);
-                  }}
-                  onBlur={() => {
-                    const n = Math.max(0, parseFloat(currentFundsStr));
-                    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
-                    setCurrentFundsStr(String(clean));
-                    setCurrentFunds(clean);
-                  }}
-                  onFocus={(e) => e.currentTarget.select()}
-                />
+  type="number"
+  value={currentFunds}
+  onChange={(e) => { trackStart(); setCurrentFunds(Number(e.target.value)); }}
+  min={0}
+/>
 
               </div>
               <div title="Your target portfolio size to become financially independent.">
                 <Label>Target goal ({currency})</Label>
                 <Input
-                  type="text"
-                  inputMode="decimal"
-                  value={targetGoalStr}
-                  onChange={(e) => {
-                    trackStart();
-                    const v = e.target.value.replace(",", ".");
-                    if (/^[0-9]*\.?[0-9]*$/.test(v)) setTargetGoalStr(v);
-                  }}
-                  onBlur={() => {
-                    const n = Math.max(0, parseFloat(targetGoalStr));
-                    const clean = Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
-                    setTargetGoalStr(String(clean));
-                    setTargetGoal(clean);
-                  }}
-                  onFocus={(e) => e.currentTarget.select()}
-                />
+  type="number"
+  value={targetGoal}
+  onChange={(e) => { trackStart(); setTargetGoal(Number(e.target.value)); }}
+  min={0}
+/>
 
               </div>
             </div>
@@ -552,11 +523,9 @@ const [showReal, setShowReal] = useState(true);
   inputMode="numeric"
   value={yearsStr}
   onChange={(e) => {
-  trackStart();                               // ← added
-  const v = e.target.value;
-  if (/^[0-9]*$/.test(v)) setYearsStr(v);     // allow empty while typing
-}}
-
+    const v = e.target.value;
+    if (/^[0-9]*$/.test(v)) setYearsStr(v); // allow empty while typing
+  }}
   onBlur={() => {
     const n = Math.max(1, Math.min(60, parseInt(yearsStr, 10))); // clamp 1–60
     const clean = Number.isFinite(n) ? String(n) : "1";
